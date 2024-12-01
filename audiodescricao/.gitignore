@@ -1,0 +1,38 @@
+# Python
+*.pyc
+*.pyo
+__pycache__/
+
+# Django
+db.sqlite3
+*.log
+media/
+staticfiles/
+
+# YOLOv5
+yolov5/
+
+# VS Code
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Environment Variables
+.env
+*.env
+
+# Docker
+*.docker
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Local virtualenvs
+venv/
+ENV/
+env/

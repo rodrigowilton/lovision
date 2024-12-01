@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicativo de Audiodescrição</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            color: #0056b3;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:disabled {
+            background-color: #cccccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Aplicativo de Audiodescrição</h1>
+    <p>Este aplicativo permite que você capture uma imagem e receba uma descrição da imagem por meio de áudio.</p>
+
+    <input type="file" id="fileInput" accept="image/*" onchange="enviarImagem(event)" />
+    <div id="descricao"></div>
+    <div class="button-container">
+        <button id="falarButton" disabled onclick="falarDescricao()">Ouvir Descrição</button>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const descricaoDiv = document.getElementById('descricao');
+        const falarButton = document.getElementById('falarButton');
+        let descricaoImagem = "";
+
+        function enviarImagem(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('imagem', file);
+
+                fetch('/api/imagem/', {  // Ajuste o endpoint se necessário
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.descricao) {
+                        descricaoImagem = data.descricao;
+                        descricaoDiv.innerText = `Descrição: ${descricaoImagem}`;
+                        falarButton.disabled = false;
+                    } else {
+                        descricaoDiv.innerText = 'Erro ao processar a imagem.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao enviar imagem:', error);
+                    descricaoDiv.innerText = 'Erro ao processar a imagem.';
+                });
+            }
+        }
+
+        function falarDescricao() {
+            if (descricaoImagem) {
+                const utterance = new SpeechSynthesisUtterance(descricaoImagem);
+                speechSynthesis.speak(utterance);
+            }
+        }
+    </script>
+</body>
+</html>
